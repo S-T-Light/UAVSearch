@@ -877,3 +877,18 @@ Evaluation 219 success rate: 0.8846666666666667
 Evaluation 220 success rate: 1.0
 Evaluation 221 success rate: 1.0
 Mean success rate: 0.8952714932126696
+2025-03-05 12:21:58
+Evaluation 1 success rate: 0.7636666666666667
+Evaluation 2 success rate: 0.06566666666666666
+Evaluation 3 success rate: 0.356
+Evaluation 4 success rate: 0.7723333333333333
+Evaluation 5 success rate: 0.39866666666666667
+Evaluation 6 success rate: 0.4816666666666667
+Evaluation 7 success rate: 0.6793333333333333
+Evaluation 8 success rate: 0.699
+Evaluation 9 success rate: 0.628
+Evaluation 10 success rate: 0.556
+Evaluation 11 success rate: 0.6283333333333333
+Evaluation 12 success rate: 0.703
+Evaluation 13 success rate: 0.6766666666666666
+Evaluation 14 success rate: 0.6193333333333333
