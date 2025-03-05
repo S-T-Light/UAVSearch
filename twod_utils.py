@@ -259,16 +259,16 @@ class Environment:
         return state
     
     def get_power_reward(self, x, y):
-        """计算以(x,y)为中心的区域功率总和"""
-        size = 1
+        """计算以(x,y)为中心的区域功率平均值"""
+        size = 3
         x_min = max(0, x - size)
         x_max = min(self.x, x + size + 1)
         y_min = max(0, y - size)
         y_max = min(self.y, y + size + 1)
-        return np.sum(self.powerGrid[x_min:x_max, y_min:y_max])
+        return np.mean(self.powerGrid[x_min:x_max, y_min:y_max])
 
     def step(self, action):
-        base_reward = -20
+        base_reward = -25
 
         directions = [
             (1, 0),
@@ -323,12 +323,12 @@ class Environment:
 
         prev_dist = np.linalg.norm(np.array(self.drone_position) - self.source)
         new_dist = np.linalg.norm(np.array([new_x, new_y]) - self.source)
-        dist_reward = (prev_dist - new_dist) * 30
+        dist_reward = (prev_dist - new_dist) * 20
 
         # 靠近源点时功率衰减速度较快，这部分较大，远离源点时功率衰减速度较慢，这部分较小
         prev_power = self.get_power_reward(self.drone_position[0], self.drone_position[1])
         new_power = self.get_power_reward(new_x, new_y)
-        power_reward = (new_power - prev_power) * 1
+        power_reward = (new_power - prev_power) * 20
 
         reward = base_reward + dist_reward + power_reward
         # print(f"dist_reward: {dist_reward}, power reward: {power_reward} reward: {reward}")

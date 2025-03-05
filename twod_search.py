@@ -25,8 +25,8 @@ from twod_utils import ReplayBuffer, Environment, plot_path_and_obstacles, save_
 if __name__ == "__main__":
     # 设置环境变量以指定使用的GPU
     os.environ["CUDA_VISIBLE_DEVICES"] = "5"
-    # mode = "train"
-    mode = "train_complex"
+    mode = "train"
+    # mode = "train_complex"
     # mode = "eval"
 
     # 读取 .mat 文件
@@ -56,77 +56,89 @@ if __name__ == "__main__":
     #         return data  # 或者其他默认值
     #     return (data - min_val) / (max_val - min_val) * 2 - 1
 
-    env_list = []
-    inf_cnt = 0
-    for idx, (filename, data) in enumerate(data_list):
-        powerGrid = data['powerGrid']
-        insideBuildingGrid = data['insideBuildingGrid']
-        gradLat = data['gradLat']
-        gradLon = data['gradLon']
-        # 如果esdf中的数据全都是inf，则将esdf设置为全0
-        if np.all(np.isinf(data['ESDF'])):
-            print(f"ESDF data in {filename} is all inf")
-            inf_cnt += 1
-            esdf = np.zeros_like(data['ESDF'])
-            gradESDFLat = np.zeros_like(data['gradESDFLat'])
-            gradESDFLon = np.zeros_like(data['gradESDFLon'])
-        else: # 否则读取esdf数据
-            esdf = data['ESDF']
-            gradESDFLat = data['gradESDFLat']
-            gradESDFLon = data['gradESDFLon']
+    # env_list = []
+    # inf_cnt = 0
+    # for idx, (filename, data) in enumerate(data_list):
+    #     powerGrid = data['powerGrid']
+    #     insideBuildingGrid = data['insideBuildingGrid']
+    #     gradLat = data['gradLat']
+    #     gradLon = data['gradLon']
+    #     # 如果esdf中的数据全都是inf，则将esdf设置为全0
+    #     if np.all(np.isinf(data['ESDF'])):
+    #         print(f"ESDF data in {filename} is all inf")
+    #         inf_cnt += 1
+    #         esdf = np.zeros_like(data['ESDF'])
+    #         gradESDFLat = np.zeros_like(data['gradESDFLat'])
+    #         gradESDFLon = np.zeros_like(data['gradESDFLon'])
+    #     else: # 否则读取esdf数据
+    #         esdf = data['ESDF']
+    #         gradESDFLat = data['gradESDFLat']
+    #         gradESDFLon = data['gradESDFLon']
         
-        shape = powerGrid.shape
-        # print(f"Power Grid Shape: {shape}")
-        max_index = (shape[0] // 2, shape[1] // 2)
-        # max_step_num = shape[0] * shape[1]
-        max_step_num = 500
+    #     shape = powerGrid.shape
+    #     # print(f"Power Grid Shape: {shape}")
+    #     max_index = (shape[0] // 2, shape[1] // 2)
+    #     # max_step_num = shape[0] * shape[1]
+    #     max_step_num = 500
 
-        # 避免0的出现
-        powerGrid[powerGrid == 0] = -50
+    #     # 避免0的出现
+    #     powerGrid[powerGrid == 0] = -50
 
-        # # 归一化到[-1, 1]
-        # powerGrid = normalize(powerGrid)
-        # gradLat = normalize(gradLat)
-        # gradLon = normalize(gradLon)
-        # esdf = normalize(esdf)
-        # gradESDFLat = normalize(gradESDFLat)
-        # gradESDFLon = normalize(gradESDFLon)
+    #     # # 归一化到[-1, 1]
+    #     # powerGrid = normalize(powerGrid)
+    #     # gradLat = normalize(gradLat)
+    #     # gradLon = normalize(gradLon)
+    #     # esdf = normalize(esdf)
+    #     # gradESDFLat = normalize(gradESDFLat)
+    #     # gradESDFLon = normalize(gradESDFLon)
 
-        # assert max_index_2d == np.unravel_index(np.argmax(powerGrid_2d, axis=None), powerGrid_2d.shape), "Max index error"
-        # x = np.unravel_index(np.argmax(powerGrid_2d, axis=None), powerGrid_2d.shape)
+    #     # assert max_index_2d == np.unravel_index(np.argmax(powerGrid_2d, axis=None), powerGrid_2d.shape), "Max index error"
+    #     # x = np.unravel_index(np.argmax(powerGrid_2d, axis=None), powerGrid_2d.shape)
 
-        # print(f"env:{idx+1}, Power Grid 2D Shape: {shape}, Max Index 2D: {max_index}, max_step_num: {max_step_num}")
+    #     # print(f"env:{idx+1}, Power Grid 2D Shape: {shape}, Max Index 2D: {max_index}, max_step_num: {max_step_num}")
 
-        env = Environment(powerGrid, insideBuildingGrid, esdf, gradLat, gradLon, gradESDFLat, gradESDFLon, max_index, max_step_num)
+    #     env = Environment(powerGrid, insideBuildingGrid, esdf, gradLat, gradLon, gradESDFLat, gradESDFLon, max_index, max_step_num)
 
-        obstacles = env.insideBuildingGrid  # 障碍物数据
-        obstacle_points = np.argwhere(obstacles)
+    #     obstacles = env.insideBuildingGrid  # 障碍物数据
+    #     obstacle_points = np.argwhere(obstacles)
 
-        # 创建二维绘图窗口
-        fig, ax = plt.subplots(figsize=(10, 10))
+    #     # 创建二维绘图窗口
+    #     fig, ax = plt.subplots(figsize=(10, 10))
 
-        # 绘制障碍物点
-        ax.scatter(obstacle_points[:, 1], obstacle_points[:, 0], c='red', marker='s', s=5, label='Obstacles', alpha=0.15)
+    #     # 绘制障碍物点
+    #     ax.scatter(obstacle_points[:, 1], obstacle_points[:, 0], c='red', marker='s', s=5, label='Obstacles', alpha=0.15)
 
-        # 绘制源点
-        ax.scatter(env.source[1], env.source[0], c='green', marker='*', s=100, label='source')
+    #     # 绘制源点
+    #     ax.scatter(env.source[1], env.source[0], c='green', marker='*', s=100, label='source')
 
-        # 设置 x 和 y 轴的范围为shape
-        ax.set_xlim([0, shape[1]])
-        ax.set_ylim([0, shape[0]])
-        ax.set_xlabel('Y')
-        ax.set_ylabel('X')
-        ax.set_title(f'Environment 2D {idx + 1}')
-        ax.legend()
-        if mode == "train":
-            plt.savefig(os.path.join("dqn_pics/env_2d/easy", f'{os.path.splitext(filename)[0]}.png'))
-        elif mode == "eval" or mode == "train_complex":
-            plt.savefig(os.path.join("dqn_pics/env_2d/complex", f'{os.path.splitext(filename)[0]}.png'))
-        plt.close()
+    #     # 设置 x 和 y 轴的范围为shape
+    #     ax.set_xlim([0, shape[1]])
+    #     ax.set_ylim([0, shape[0]])
+    #     ax.set_xlabel('Y')
+    #     ax.set_ylabel('X')
+    #     ax.set_title(f'Environment 2D {idx + 1}')
+    #     ax.legend()
+    #     if mode == "train":
+    #         plt.savefig(os.path.join("dqn_pics/env_2d/easy", f'{os.path.splitext(filename)[0]}.png'))
+    #     elif mode == "eval" or mode == "train_complex":
+    #         plt.savefig(os.path.join("dqn_pics/env_2d/complex", f'{os.path.splitext(filename)[0]}.png'))
+    #     plt.close()
 
-        env_list.append(env)
-    print("env_list number:", len(env_list), "inf_cnt:", inf_cnt)
+    #     env_list.append(env)
+    # print("env_list number:", len(env_list), "inf_cnt:", inf_cnt)
 
+    # # 保存环境数据
+    # if mode == "train":
+    #     np.save("env_list_easy.npy", env_list)
+    # elif mode == "eval" or mode == "train_complex":
+    #     np.save("env_list_complex.npy", env_list)
+    
+    # 读取环境数据
+    if mode == "train":
+        env_list = np.load("env_list_easy.npy", allow_pickle=True)
+    elif mode == "eval" or mode == "train_complex":
+        env_list = np.load("env_list_complex.npy", allow_pickle=True)
+    print("env_list number:", len(env_list))
 
     lr = 1e-4
     num_episodes = 10000
