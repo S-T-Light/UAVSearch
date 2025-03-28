@@ -25,8 +25,8 @@ from twod_utils import ReplayBuffer, Environment, plot_path_and_obstacles, save_
 if __name__ == "__main__":
     # 设置环境变量以指定使用的GPU
     os.environ["CUDA_VISIBLE_DEVICES"] = "5"
-    mode = "train"
-    # mode = "train_complex"
+    # mode = "train"
+    mode = "train_complex"
     # mode = "eval"
 
     # 读取 .mat 文件
